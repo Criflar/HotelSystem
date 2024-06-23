@@ -1,3 +1,6 @@
+import java.util.*;
+import java.time.*;
+
 public class Reservation {
     private String guestName;
     private int checkIn;
