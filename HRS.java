@@ -2,104 +2,150 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class HRS {
-    private ArrayList<Hotel> hotelList = new ArrayList<>();
+    private ArrayList<Hotel> hotelList;
+
+    // Constructor to initialize HRS with an empty list of hotels
+    public HRS() {
+        this.hotelList = new ArrayList<>();
+    }
+
+    // Constructor to initialize HRS with a predefined list of hotels
+    public HRS(ArrayList<Hotel> hotelList) {
+        this.hotelList = hotelList;
+    }
 
     public void displayHotels() {
-        System.out.println("Available Hotels:");
+        if (hotelList.isEmpty()) {
+            System.out.println("No hotels available.");
+            return;
+        }
+
+        System.out.println("List of Available Hotels:");
         for (int i = 0; i < hotelList.size(); i++) {
-            System.out.println((i + 1) + ".) " + hotelList.get(i).getName());
+            System.out.println((i + 1) + ". " + hotelList.get(i).getName());
         }
     }
 
     public void book() {
-        Scanner input = new Scanner(System.in);
-        int chosenHotelIndex, choice, checkIn, checkOut, chosenRoomIndex;
+        Scanner scanner = new Scanner(System.in);
+        int chosenHotelIndex;
         String guestName;
+        int checkIn, checkOut;
+        int choice;
 
-        System.out.println("Select a hotel to book:");
         displayHotels();
-        chosenHotelIndex = input.nextInt() - 1;
+
+        if (hotelList.isEmpty()) {
+            System.out.println("No hotels available to book.");
+            return;
+        }
+
+        System.out.print("Enter the hotel number to book: ");
+        chosenHotelIndex = scanner.nextInt() - 1;
+        scanner.nextLine(); // Consume newline after nextInt()
+
         while (chosenHotelIndex < 0 || chosenHotelIndex >= hotelList.size()) {
-            System.out.println("Invalid input. Please choose a valid hotel number:");
-            chosenHotelIndex = input.nextInt() - 1;
+            System.out.println("Invalid input. Please enter a valid hotel number: ");
+            chosenHotelIndex = scanner.nextInt() - 1;
+            scanner.nextLine(); // Consume newline after nextInt()
         }
 
-        System.out.println("Enter Check-In Date (Day 1-30): ");
-        checkIn = input.nextInt();
+        Hotel chosenHotel = hotelList.get(chosenHotelIndex);
+
+        System.out.print("Enter Check-In Date (1-30): ");
+        checkIn = scanner.nextInt();
         while (checkIn < 1 || checkIn > 30) {
-            System.out.println("Invalid input. Please enter a number between 1 and 30:");
-            checkIn = input.nextInt();
+            System.out.print("Invalid input. Please enter a valid Check-In Date (1-30): ");
+            checkIn = scanner.nextInt();
         }
 
-        System.out.println("Enter Check-Out Date (Day 2-31): ");
-        checkOut = input.nextInt();
+        System.out.print("Enter Check-Out Date (2-31): ");
+        checkOut = scanner.nextInt();
         while (checkOut < 2 || checkOut > 31 || checkOut <= checkIn) {
-            System.out.println("Invalid input. Please enter a number between 2 and 31 and after Check-In Date:");
-            checkOut = input.nextInt();
+            System.out.print("Invalid input. Please enter a valid Check-Out Date (2-31, after Check-In): ");
+            checkOut = scanner.nextInt();
         }
 
-        System.out.println("Select your booking preference:");
-        System.out.println("1. Let system choose available room");
-        System.out.println("2. View available rooms");
-        System.out.println("3. View all rooms status");
-        choice = input.nextInt();
-        while (choice < 1 || choice > 3) {
-            System.out.println("Invalid input. Please enter 1, 2, or 3:");
-            choice = input.nextInt();
-        }
+        System.out.println("Choose an option:");
+        System.out.println("1. Let us choose a room for you.");
+        System.out.println("2. See available rooms.");
+        System.out.println("3. See all rooms and their status.");
+        System.out.print("Enter your choice: ");
+        choice = scanner.nextInt();
+        scanner.nextLine(); // Consume newline after nextInt()
 
         switch (choice) {
             case 1:
-                int nextRoomIndex = hotelList.get(chosenHotelIndex).getNextRoom(checkIn, checkOut);
-                if (nextRoomIndex == -1) {
-                    System.out.println("No available rooms for selected dates.");
+                int roomIndex = chosenHotel.getNextRoom(checkIn, checkOut);
+                if (roomIndex == -1) {
+                    System.out.println("Sorry! No available rooms for your dates.");
                     break;
                 }
-                Room nextRoom = hotelList.get(chosenHotelIndex).getRoom(nextRoomIndex);
-                System.out.println("Enter guest name:");
-                guestName = input.nextLine(); // Consume newline left by nextInt
-                guestName = input.nextLine(); // Read actual guest name
-                hotelList.get(chosenHotelIndex).addReservation(guestName, checkIn, checkOut, nextRoom);
-                System.out.println("Reservation successful for Room " + nextRoom.getName());
+                Room room = chosenHotel.getRoom(roomIndex);
+                System.out.print("Enter your name: ");
+                guestName = scanner.nextLine();
+                chosenHotel.addReservation(guestName, checkIn, checkOut, room);
+                System.out.println("Reservation confirmed! Room " + room.getName() + " booked.");
                 break;
             case 2:
-                hotelList.get(chosenHotelIndex).getAvailRooms(checkIn, checkOut);
-                System.out.println("Enter room number:");
-                chosenRoomIndex = input.nextInt() - 1;
-                while (!hotelList.get(chosenHotelIndex).getAvailRooms().contains(chosenRoomIndex)) {
-                    System.out.println("Invalid input. Please choose an available room:");
-                    chosenRoomIndex = input.nextInt() - 1;
+                chosenHotel.getAvailRooms(checkIn, checkOut);
+                System.out.print("Enter the room number to book: ");
+                int roomNumber = scanner.nextInt() - 1;
+                scanner.nextLine(); // Consume newline after nextInt()
+                if (roomNumber < 0 || roomNumber >= chosenHotel.getRooms().size()) {
+                    System.out.println("Invalid room number.");
+                    break;
                 }
-                Room chosenRoom = hotelList.get(chosenHotelIndex).getRoom(chosenRoomIndex);
-                System.out.println("Enter guest name:");
-                guestName = input.nextLine(); // Consume newline left by nextInt
-                guestName = input.nextLine(); // Read actual guest name
-                hotelList.get(chosenHotelIndex).addReservation(guestName, checkIn, checkOut, chosenRoom);
-                System.out.println("Reservation successful for Room " + chosenRoom.getName());
+                Room selectedRoom = chosenHotel.getRoom(roomNumber);
+                System.out.print("Enter your name: ");
+                guestName = scanner.nextLine();
+                chosenHotel.addReservation(guestName, checkIn, checkOut, selectedRoom);
+                System.out.println("Reservation confirmed! Room " + selectedRoom.getName() + " booked.");
                 break;
             case 3:
-                hotelList.get(chosenHotelIndex).getAllRooms(checkIn, checkOut);
-                System.out.println("Enter room number:");
-                chosenRoomIndex = input.nextInt() - 1;
-                while (!hotelList.get(chosenHotelIndex).getAvailRooms().contains(chosenRoomIndex)) {
-                    System.out.println("Invalid input. Please choose an available room:");
-                    chosenRoomIndex = input.nextInt() - 1;
+                chosenHotel.getAllRooms(checkIn, checkOut);
+                System.out.print("Enter the room number to book: ");
+                int roomNum = scanner.nextInt() - 1;
+                scanner.nextLine(); // Consume newline after nextInt()
+                if (roomNum < 0 || roomNum >= chosenHotel.getRooms().size()) {
+                    System.out.println("Invalid room number.");
+                    break;
                 }
-                Room selectedRoom = hotelList.get(chosenHotelIndex).getRoom(chosenRoomIndex);
-                System.out.println("Enter guest name:");
-                guestName = input.nextLine(); // Consume newline left by nextInt
-                guestName = input.nextLine(); // Read actual guest name
-                hotelList.get(chosenHotelIndex).addReservation(guestName, checkIn, checkOut, selectedRoom);
-                System.out.println("Reservation successful for Room " + selectedRoom.getName());
+                Room roomSelected = chosenHotel.getRoom(roomNum);
+                System.out.print("Enter your name: ");
+                guestName = scanner.nextLine();
+                chosenHotel.addReservation(guestName, checkIn, checkOut, roomSelected);
+                System.out.println("Reservation confirmed! Room " + roomSelected.getName() + " booked.");
+                break;
+            default:
+                System.out.println("Invalid choice.");
                 break;
         }
     }
 
-    public void addHotel(Hotel hotel) {
-        hotelList.add(hotel);
+    public void addHotel() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter the name of the new hotel: ");
+        String hotelName = scanner.nextLine();
+        Hotel newHotel = new Hotel(hotelName);
+        hotelList.add(newHotel);
+        System.out.println("Hotel '" + hotelName + "' added successfully.");
     }
 
-    public void removeHotel(int hotelIndex) {
-        hotelList.remove(hotelIndex);
+    public void removeHotel(int index) {
+        if (index < 0 || index >= hotelList.size()) {
+            System.out.println("Invalid hotel index.");
+            return;
+        }
+        hotelList.remove(index);
+        System.out.println("Hotel removed successfully.");
+    }
+
+    public ArrayList<Hotel> getHotelList() {
+        return hotelList;
+    }
+
+    public void setHotelList(ArrayList<Hotel> hotelList) {
+        this.hotelList = hotelList;
     }
 }

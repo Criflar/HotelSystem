@@ -1,20 +1,23 @@
 import java.util.ArrayList;
 
 public class Room {
-    private String roomName;
+    private String name;
     private double basePrice;
     private ArrayList<Boolean> daysBooked;
 
-    public Room(String roomName) {
-        this.roomName = roomName;
+    // Constructor
+    public Room(String name) {
+        this.name = name;
         this.basePrice = 1299.0;
         this.daysBooked = new ArrayList<>(31); // Initialize with 31 days
-        
+
+        // Initialize all days as not booked (false)
         for (int i = 0; i < 31; i++) {
-            daysBooked.add(false); // Initially, all days are not booked
+            daysBooked.add(false);
         }
     }
 
+    // Setters
     public void setBasePrice(double price) {
         if (price >= 100.0) {
             this.basePrice = price;
@@ -23,96 +26,91 @@ public class Room {
         }
     }
 
-    public boolean bookRoom(int startDay, int endDay) {
-        if (!isValidBookingRange(startDay, endDay)) {
-            System.out.println("Invalid booking dates.");
-            return false;
+    public void setDaysBooked(boolean status, int startingDay, int lastDay) {
+        // Ensure startingDay and lastDay are within valid range
+        if (startingDay < 1) {
+            startingDay = 1;
+        }
+        if (lastDay > 31) {
+            lastDay = 31;
         }
 
-        for (int i = startDay - 1; i < endDay; i++) {
-            daysBooked.set(i, true);
-        }
-        return true;
-    }
-
-    private boolean isValidBookingRange(int startDay, int endDay) {
-        return startDay >= 1 && startDay <= 31 &&
-               endDay >= 1 && endDay <= 31 &&
-               startDay <= endDay;
-    }
-
-    public boolean checkAvailability(int checkIn, int checkOut) {
-        if (!isValidCheckInOutDates(checkIn, checkOut)) {
-            System.out.println("Invalid check-in or check-out dates.");
-            return false;
-        }
-
-        for (int i = checkIn - 1; i <= checkOut - 1; i++) {
-            if (daysBooked.get(i)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private boolean isValidCheckInOutDates(int checkIn, int checkOut) {
-        return checkIn >= 1 && checkIn <= 31 &&
-               checkOut >= 1 && checkOut <= 31 &&
-               checkIn <= checkOut;
-    }
-
-    public void displayBookedStatus(String input) {
-        for (int i = 0; i < 31; i++) {
-            if (input.equalsIgnoreCase("YES")) {
-                displayAllDaysStatus(i);
-            } else {
-                displayAvailableDaysStatus(i);
-            }
+        // Book/unbook days from startingDay to lastDay
+        for (int i = startingDay - 1; i < lastDay; i++) {
+            daysBooked.set(i, status);
         }
     }
 
-    private void displayAllDaysStatus(int i) {
-        System.out.print("Day " + (i + 1) + ": ");
-        if (daysBooked.get(i)) {
-            System.out.println("\u001b[31;1m" + "Booked" + "\u001b[0m");
-        } else {
-            System.out.println("\u001b[32;1m" + "Available" + "\u001b[0m");
-        }
-    }
-
-    private void displayAvailableDaysStatus(int i) {
-        if (daysBooked.get(i)) {
-            System.out.print("Day " + (i + 1) + ":   ");
-            System.out.println("\u001b[32;1m" + "Available" + "\u001b[0m");
-        }
-    }
-
-    // Getters for private fields
-    public String getRoomName() {
-        return roomName;
-    }
-
+    // Getters
     public double getBasePrice() {
         return basePrice;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public ArrayList<Boolean> getDaysBooked() {
+        return daysBooked;
+    }
+
     public int getTotalAvailable() {
-        int count = 0;
+        int total = 0;
         for (boolean booked : daysBooked) {
             if (!booked) {
-                count++;
+                total++;
             }
         }
-        return count;
+        return total;
     }
 
     public int getTotalBooked() {
-        int count = 0;
+        int total = 0;
         for (boolean booked : daysBooked) {
             if (booked) {
-                count++;
+                total++;
             }
         }
-        return count;
+        return total;
+    }
+
+    public boolean checkAvailability(int checkIn, int checkOut) {
+        // Adjust checkIn and checkOut to zero-based index
+        checkIn--;
+        checkOut--;
+
+        if (checkIn < 0 || checkIn >= 30 || checkOut <= 0 || checkOut >= 31 || checkOut < checkIn) {
+            return false;
+        }
+
+        // Check special condition for checkIn
+        if (daysBooked.get(checkIn) && (checkIn + 1 <= checkOut) && !daysBooked.get(checkIn + 1)) {
+            checkIn++;
+        }
+
+        // Check if any day in the range [checkIn, checkOut] is booked
+        for (int i = checkIn; i <= checkOut; i++) {
+            if (daysBooked.get(i)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public void displayBooked(String input) {
+        for (int i = 0; i < 31; i++) {
+            if (input.equalsIgnoreCase("YES")) {
+                if (daysBooked.get(i)) {
+                    System.out.printf("  Day %2d: \u001b[31;1mBooked\u001b[0m%n", i + 1);
+                } else {
+                    System.out.printf("  Day %2d: \u001b[32;1mAVAILABLE\u001b[0m%n", i + 1);
+                }
+            } else {
+                if (daysBooked.get(i)) {
+                    System.out.printf("  Day %2d: \u001b[32;1mAVAILABLE\u001b[0m%n", i + 1);
+                }
+            }
+        }
     }
 }
