@@ -1,7 +1,18 @@
 import java.util.*;
 
+/**
+ * This class implements a simple command-line based Hotel Reservation System.
+ * It allows users to create hotels, view hotel details, manage hotels,
+ * book reservations, and exit the system.
+ */
 public class ReiDriver {
-    public static void main (String[] args){
+
+    /**
+     * The main method that drives the Hotel Reservation System.
+     * @param args Command line arguments (not used in this application)
+     */
+    public static void main(String[] args) {
+        // Declaration of variables
         int i;
         int menu = 1;
         int option;
@@ -20,42 +31,42 @@ public class ReiDriver {
         double newBasePrice;
         int invalidPrice;
         int removeHotel;
-        HRS HRS = new HRS();
+        HRS HRS = new HRS(); // Instantiate the Hotel Reservation System
 
-        Scanner input = new Scanner(System.in);
+        Scanner input = new Scanner(System.in); // Scanner object for user input
 
+        // Main loop for the menu system
         while (menu == 1) {
+            System.out.println("\n       ~~~~~~~~~~ \u001b[33;1mHOTEL RESERVATION SYSTEM\u001b[0m ~~~~~~~~~~\n");
 
-            System.out.println("\n   ▒▓▒▓▒▓ HOTEL RESERVATION SYSTEM ▓▒▓▒▓▒▓\n");
+            // Displaying menu options
+            System.out.println("         ============= \u001b[35;1mMANAGER OPTIONS\u001b[0m: =============");
+            System.out.println("                      [1] Create Hotel");
+            System.out.println("                      [2] View Hotel");
+            System.out.println("                      [3] Manage Hotel");
 
+            System.out.println("                 ---------------------------");
 
-            System.out.println("   ╔═════════ MANAGER OPTIONS: ═════════╗");
-            System.out.println("             [1] Create Hotel");
-            System.out.println("             [2] View Hotel");
-            System.out.println("             [3] Manage Hotel");
+            System.out.println("         ============= \u001b[35;1mCUSTOMER OPTIONS\u001b[0m: =============");
+            System.out.println("                    [4] Book a Reservation");
 
-            System.out.println("         ---------------------------");
+            System.out.println("                 ---------------------------");
 
-            System.out.println("    ╔═════════ CUSTOMER OPTIONS: ═════════╗");
-            System.out.println("            [4] Book a Reservation");
-
-            System.out.println("         ---------------------------");
-
-            System.out.println("                 [5] Exit\n");
-            System.out.println("--- Remember, enter [0] to go back to the previous menu! ---\n");
+            System.out.println("                         [5] Exit\n");
+            System.out.println("   --- \u001b[37;1mRemember, enter [0] to go back to the previous menu!\u001b[0m ---\n");
 
             System.out.print("INPUT: ");
             option = input.nextInt();
             input.nextLine(); // leftover newline
 
+            // Validate user input
             while (option < 0 || option > 5) {
                 System.out.print("Invalid input. Please enter a valid choice: ");
                 option = input.nextInt();
                 input.nextLine(); // leftover newline
             }
 
-            input.close();
-
+            // Switch case based on user's menu option
             switch (option) {
                 case 0:
                     System.out.println("Going back to the previous menu...");
@@ -88,7 +99,7 @@ public class ReiDriver {
                             option = input.nextInt();
                             input.nextLine(); // Consume the leftover newline
 
-
+                            // Validate user confirmation choice
                             while (option != 1 && option != 2) {
                                 System.out.print("Invalid input. Please enter a valid choice: ");
                                 option = input.nextInt();
@@ -101,95 +112,101 @@ public class ReiDriver {
                                 invalidName = false;
                             }
                         } else {
-                            System.out.println("\nA hotel with the name '" + hotelName + "' already exists. Please choose a different name.\n");
+                            System.out.println("\nA hotel with the name '" + hotelName + "' already exists. Please choose a different name.");
                         }
-                        input.close();
+
                     }
                     break;
 
-
-
                 case 2:
+                    // Display list of hotels
                     HRS.displayHotels();
 
-                        if (!HRS.getHotelList().isEmpty()) {
-                            System.out.print("Which hotel would you like to view? (Input List Number Value): ");
+                    if (!HRS.getHotelList().isEmpty()) {
+                        System.out.print("Which hotel would you like to view? (Input List Number Value): ");
+                        hotelChoice = input.nextInt();
+                        input.nextLine(); // leftover newline
+
+                        if (hotelChoice == 0) {
+                            System.out.println("\nHotel viewing canceled. Going back to the previous menu...\n");
+                            break;
+                        }
+
+                        while (hotelChoice < 0 || hotelChoice > HRS.getHotelList().size()) {
+                            System.out.println("Invalid input. Please enter a valid hotel number: ");
                             hotelChoice = input.nextInt();
                             input.nextLine(); // leftover newline
+                        }
 
-                            if (hotelChoice == 0) {
-                                System.out.println("\nHotel viewing canceled. Going back to the previous menu...\n");
-                                break;
-                            }
+                        hotelChoice -= 1;
+                        System.out.println("===============================================");
+                        System.out.println("|                \u001b[33;1mHotel Info\u001b[0m                  |");
+                        System.out.println("===============================================");
+                        System.out.println("| Hotel Name: \u001b[36;1m" + HRS.getHotelList().get(hotelChoice).getName() + "\u001b[0m");
+                        System.out.println("===============================================");
+                        System.out.println("|  [1] Hotel Overview");
+                        System.out.println("|  [2] Room and Reservation Overview ");
+                        System.out.println("===============================================");
+                        System.out.print("INPUT: ");
+                        viewChoice = input.nextInt();
+                        input.nextLine(); // leftover newline
 
-                            while (hotelChoice < 0 || hotelChoice > HRS.getHotelList().size()) {
-                                System.out.println("Invalid input. Please enter a valid hotel number: ");
-                                hotelChoice = input.nextInt();
-                                input.nextLine(); // leftover newline
-                            }
-
-                            hotelChoice -= 1;
-                            System.out.println("Hotel Info: " + HRS.getHotelList().get(hotelChoice).getName() + "\n");
-                            System.out.println("  [1] Hotel Overview");
-                            System.out.println("  [2] Room and Reservation Overview \n");
-                            System.out.print("INPUT: ");
+                        // Validate user input for view options
+                        while (viewChoice != 0 && viewChoice != 1 && viewChoice != 2) {
+                            System.out.print("Invalid input. Please enter a valid choice: ");
                             viewChoice = input.nextInt();
                             input.nextLine(); // leftover newline
-
-                            while (viewChoice != 0 && viewChoice != 1 && viewChoice != 2) {
-                                System.out.print("Invalid input. Please enter a valid choice: ");
-                                viewChoice = input.nextInt();
-                                input.nextLine(); // leftover newline
-                            }
-                            input.close();
-
-                            switch (viewChoice) {
-                                case 0:
-                                    System.out.println("\nHotel viewing canceled. Going back to the previous menu...\n");
-                                    break;
-
-                                case 1:
-                                    System.out.println("High-level Hotel Overview:");
-                                    HRS.getHotelList().get(hotelChoice).viewHighInfo();
-                                    break;
-
-                                case 2:
-                                        System.out.println("Low-level Room and Reservation Overview:");
-                                        System.out.println("\n  [1] View Available Rooms on a Date");
-                                        System.out.println("  [2] Room Info");
-                                        System.out.println("  [3] Reservation Info\n");
-
-                                        System.out.print("INPUT: ");
-                                        lowChoice = input.nextInt();
-                                        input.nextLine(); // Consume the leftover newline
-
-                                        while (lowChoice != 0 && lowChoice != 1 && lowChoice != 2 && lowChoice != 3) {
-                                            System.out.print("Invalid input. Please enter a valid choice: ");
-                                            lowChoice = input.nextInt();
-                                            input.nextLine(); // leftover newline
-                                        }
-
-                                        switch (lowChoice) {
-                                            case 0:
-                                                System.out.println("\nHotel viewing canceled. Going back to the previous menu...\n");
-                                                break;
-                                            case 1:
-                                                HRS.getHotelList().get(hotelChoice).viewLowInfo1();
-                                                break;
-
-                                            case 2:
-                                                HRS.getHotelList().get(hotelChoice).viewLowInfo2();
-                                                break;
-
-                                            case 3:
-                                                HRS.getHotelList().get(hotelChoice).viewLowInfo3();
-                                                break;
-                                        }
-                                    input.close();
-                                    break;
-                            }
                         }
-                break;
+
+                        switch (viewChoice) {
+                            case 0:
+                                System.out.println("\nHotel viewing canceled. Going back to the previous menu...\n");
+                                break;
+
+                            case 1:
+                                HRS.getHotelList().get(hotelChoice).viewHighInfo();
+                                break;
+
+                            case 2:
+                                System.out.println("\n===============================================");
+                                System.out.println("|        \u001b[33;1mRoom and Reservation Overview\u001b[0m        |");
+                                System.out.println("===============================================");
+                                System.out.println("|  [1] View Available Rooms on a Date");
+                                System.out.println("|  [2] Room Info");
+                                System.out.println("|  [3] Reservation Info");
+                                System.out.println("===============================================");
+                                System.out.print("INPUT: ");
+                                lowChoice = input.nextInt();
+                                input.nextLine(); // Consume the leftover newline
+
+                                // Validate user input for low-level info options
+                                while (lowChoice != 0 && lowChoice != 1 && lowChoice != 2 && lowChoice != 3) {
+                                    System.out.print("Invalid input. Please enter a valid choice: ");
+                                    lowChoice = input.nextInt();
+                                    input.nextLine(); // leftover newline
+                                }
+
+                                switch (lowChoice) {
+                                    case 0:
+                                        System.out.println("\nHotel viewing canceled. Going back to the previous menu...\n");
+                                        break;
+                                    case 1:
+                                        HRS.getHotelList().get(hotelChoice).viewLowInfo1();
+                                        break;
+
+                                    case 2:
+                                        HRS.getHotelList().get(hotelChoice).viewLowInfo2();
+                                        break;
+
+                                    case 3:
+                                        HRS.getHotelList().get(hotelChoice).viewLowInfo3();
+                                        break;
+                                }
+
+                                break;
+                        }
+                    }
+                    break;
 
                 case 3:
                     HRS.displayHotels();
@@ -211,27 +228,29 @@ public class ReiDriver {
                         }
 
                         manageChoice -= 1;
-                        System.out.println("Hotel Management: " + HRS.getHotelList().get(manageChoice).getName() + "\n");
 
-                        System.out.println("[1] Name Change");
-                        System.out.println("[2] Add Room/s");
-                        System.out.println("[3] Remove Room/s");
-                        System.out.println("[4] Update Base Price");
-                        System.out.println("[5] Remove Reservation");
-                        System.out.println("[6] Remove Hotel\n");
-
+                        System.out.println("===============================================");
+                        System.out.println("|              \u001b[33;1mHotel Management\u001b[0m               |");
+                        System.out.println("===============================================");
+                        System.out.println(" Hotel Name: \u001b[36;1m" + HRS.getHotelList().get(manageChoice).getName() + "\u001b[0m");
+                        System.out.println("===============================================");
+                        System.out.println("| [1] Name Change");
+                        System.out.println("| [2] Add Room/s");
+                        System.out.println("| [3] Remove Room/s");
+                        System.out.println("| [4] Update Base Price");
+                        System.out.println("| [5] Remove Reservation");
+                        System.out.println("| [6] Remove Hotel");
+                        System.out.println("===============================================");
                         System.out.print("INPUT: ");
                         manageChoice2 = input.nextInt();
                         input.nextLine(); // leftover newline
 
+                        // Validate user input for manage options
                         while (manageChoice2 < 0 || manageChoice2 > 6) {
                             System.out.print("Invalid input. Please enter a valid choice: ");
                             manageChoice2 = input.nextInt();
                             input.nextLine(); // leftover newline
                         }
-
-                        input.close();
-
 
                         switch (manageChoice2) {
                             case 0:
@@ -279,7 +298,6 @@ public class ReiDriver {
                                         System.out.println("\nPlease enter a unique name.");
                                     }
                                 }
-                                input.close();
                                 break;
 
                             case 2:
@@ -302,115 +320,123 @@ public class ReiDriver {
 
                                     while (addRooms < 0 || addRooms > (50 - HRS.getHotelList().get(manageChoice).getRoomAmt())) {
                                         if (HRS.getHotelList().get(manageChoice).getRoomAmt() + addRooms > 50)
-                                            System.out.println("Error. There is a limit of 50 rooms per hotel.");
+                                            System.out.println("\nError. There is a limit of 50 rooms per hotel.");
 
-                                        System.out.println("Invalid input. Please enter a valid number of rooms to add: ");
+                                        System.out.print("Please enter a valid number of rooms to add: ");
                                         addRooms = input.nextInt();
                                         input.nextLine(); // leftover newline
                                     }
 
                                     System.out.println("\nAre you sure you want to add " + addRooms + " rooms to " + HRS.getHotelList().get(manageChoice).getName() + "?");
-                                    confirmationChoices();
+                                    System.out.println("[1] Yes                  [2] No");
+                                    System.out.print("INPUT: ");
                                     option = input.nextInt();
+                                    input.nextLine(); // leftover newline
 
                                     while (option != 1 && option != 2) {
-                                        System.out.print("Invalid input. Please enter a valid choice: ");
+                                        confirmationChoices();
                                         option = input.nextInt();
                                         input.nextLine(); // leftover newline
                                     }
 
                                     if (option == 1) {
                                         HRS.getHotelList().get(manageChoice).addRoom(addRooms);
-                                        System.out.println(addRooms + " Rooms have been successfully added to " + HRS.getHotelList().get(manageChoice).getName() + "\n");
-                                        System.out.println("Total Number of Rooms: " + HRS.getHotelList().get(manageChoice).getRoomAmt() + "\n");
+                                        System.out.println("\u001b[36;1m" + addRooms + "\u001b[0m rooms have been successfully added to \u001b[36;1m" + HRS.getHotelList().get(manageChoice).getName() + "\u001b[0m\n");
+                                        System.out.println("Total Number of Rooms: \u001b[36;1m" + HRS.getHotelList().get(manageChoice).getRoomAmt() + "\u001b[0m\n");
                                         invalidRoomNum = 0;
                                     }
                                 }
-                                input.close();
                                 break;
 
+                            case 3:
+                                removingRooms = 1;
+                                while (removingRooms == 1) {
+                                    HRS.getHotelList().get(manageChoice).displayRooms();
 
-//                            case 3:
-//                                ArrayList<Integer> removeRooms = new ArrayList<Integer>();
-//
-//                                while(removingRooms == 1){
-//                                    HRS.getHotelList().get(manageChoice).displayRooms();
-//
-//                                    System.out.println("Select Rooms to Remove. Enter [0] to Finalize Selection");
-//
-//                                    toRemove = input.nextInt();
-//                                    toRemove -= 1;
-//                                    input.nextLine(); // leftover newline
-//
-//                                    if (toRemove < 0){ // finalized, remove rooms
-//                                        for (i = 0; i < HRS.getHotelList().get(manageChoice).getRoomAmt(); i++){
-//                                            HRS.getHotelList().get(manageChoice).removeRoom(removeRooms(i));
-//                                        }
-//                                    }
-//                                    else {
-//                                        removeRooms.add(toRemove);
-//                                    }
-//
-//
-//                                }
-//                                break;
+                                    System.out.print("Select rooms to remove. Enter [0] to exit: ");
 
-                            case 4:
-                                invalidPrice = 1;
-                                while (invalidPrice == 1) {
-                                    System.out.print("Enter New Price: ");
-                                    newBasePrice = input.nextDouble();
+                                    toRemove = input.nextInt();
                                     input.nextLine(); // leftover newline
 
-                                    if ((int)newBasePrice == 0) {
-                                        System.out.println("\nHotel management canceled. Going back to the previous menu...\n");
-                                        break;
-                                    }
+                                    if (toRemove != 0) { // finalized, remove rooms
+                                        HRS.getHotelList().get(manageChoice).removeRoom(toRemove);
+                                    } else {
 
-                                    if (newBasePrice >= 100.00) {
-                                        System.out.println("\nAre you sure you want to set the hotel's new base price to " + newBasePrice + "?");
+                                        System.out.println("\nAre you sure you want to remove this room?");
                                         System.out.println("[1] Yes                  [2] No");
                                         System.out.print("INPUT: ");
                                         option = input.nextInt();
-
-                                        while (option != 1 && option != 2) {
-                                            System.out.print("Invalid input. Please enter a valid choice: ");
-                                            option = input.nextInt();
-                                            input.nextLine(); // leftover newline
-                                        }
-
-                                        confirmationChoices();
-                                        option = input.nextInt();
                                         input.nextLine(); // leftover newline
-
                                         while (option != 1 && option != 2) {
-                                            System.out.print("Invalid input. Please enter a valid choice: ");
+                                            confirmationChoices();
                                             option = input.nextInt();
                                             input.nextLine(); // leftover newline
                                         }
 
                                         if (option == 1) {
-                                            HRS.getHotelList().get(manageChoice).updateBasePrice(newBasePrice);
-                                            invalidPrice = 0;
-                                        }
-                                    } else {
-                                        System.out.println("Invalid Price. New price must be PHP100.00 or above.");
+                                            System.out.println("\nEnding room removal...");
+                                            removingRooms = 0;
+                                        } else break;
                                     }
                                 }
-                                input.close();
+                                break;
+
+                            case 4:
+                                if (HRS.getHotelList().get(manageChoice).getReservations().isEmpty()) {
+                                    invalidPrice = 1;
+                                    while (invalidPrice == 1) {
+                                        System.out.print("Enter New Price: ");
+                                        newBasePrice = input.nextDouble();
+                                        input.nextLine(); // leftover newline
+
+                                        if ((int) newBasePrice == 0) {
+                                            System.out.println("\nHotel management canceled. Going back to the previous menu...\n");
+                                            break;
+                                        }
+
+                                        if (newBasePrice >= 100.00) {
+                                            System.out.println("\nAre you sure you want to set the hotel's new base price to " + newBasePrice + "?");
+                                            System.out.println("[1] Yes                  [2] No");
+                                            System.out.print("INPUT: ");
+                                            option = input.nextInt();
+
+                                            while (option != 1 && option != 2) {
+                                                System.out.print("\nInvalid input. Please enter a valid choice: ");
+                                                option = input.nextInt();
+                                                input.nextLine(); // leftover newline
+                                            }
+
+                                            if (option == 1) {
+                                                HRS.getHotelList().get(manageChoice).updateBasePrice(newBasePrice);
+                                                invalidPrice = 0;
+                                            }
+
+                                        } else {
+                                            System.out.println("\nInvalid Price. New price must be PHP100.00 or above.");
+                                        }
+                                    }
+
+                                } else {
+                                    System.out.println("\nCannot change the price! There are still reservations in the hotel.");
+                                }
+
                                 break;
 
                             case 5:
-                                //remove reservation to be implemented after booking
+                                if (HRS.getHotelList().get(manageChoice).getReservations().isEmpty()) {
+                                    System.out.println("\nThere are currently no reservations in this hotel.\n");
+                                } else {
+                                    HRS.getHotelList().get(manageChoice).removeReservation();
+                                }
 
                                 break;
 
                             case 6:
-                                System.out.println("\nAre you sure you want to remove this hotel?\n");
+                                System.out.println("\nAre you sure you want to remove this hotel?");
                                 System.out.println("[1] Yes                  [2] No");
 
                                 removeHotel = input.nextInt();
-                                input.nextLine(); //leftover newline
+                                input.nextLine(); // leftover newline
 
                                 while (removeHotel != 1 && removeHotel != 2) {
                                     System.out.print("Invalid input. Please enter a valid choice: ");
@@ -422,22 +448,16 @@ public class ReiDriver {
                                     HRS.removeHotel(manageChoice);
                                 }
 
-                                input.close();
                                 break;
 
                         }
                     }
-                break;
+                    break;
 
                 case 4: // booking
                     HRS.displayHotels();
-
-                    if (!HRS.getHotelList().isEmpty()) {
-                        System.out.println("Which hotel would you like to book a room in? ");
-
-
-                    }
-                break;
+                    HRS.book();
+                    break;
 
                 case 5:
                     System.out.println("\nAre you sure you want to exit the Hotel Reservation System?");
@@ -448,20 +468,24 @@ public class ReiDriver {
                     while (option != 1 && option != 2) {
                         confirmationChoices();
                         option = input.nextInt();
-                        // input.nextLine(); // leftover newline
+                        input.nextLine(); // leftover newline
                     }
                     if (option == 1) menu = 0;
                     else break;
-                    input.close();
             }
 
         }
 
+        input.close(); // Close the scanner object
     }
 
+    /**
+     * Displays a prompt for confirmation choices.
+     */
     public static void confirmationChoices() {
         System.out.println("Please enter only [1] Yes or [2] No.");
         System.out.println("[1] Yes                  [2] No");
         System.out.print("INPUT: ");
     }
+
 }
