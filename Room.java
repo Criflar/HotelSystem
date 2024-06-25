@@ -1,59 +1,117 @@
-import java.util.*;
+import java.util.ArrayList;
 
 public class Room {
-    private int num;
+    private String name;
     private double basePrice;
-    private boolean availability;
-    private ArrayList<Integer> day = new ArrayList<Integer>();
+    private ArrayList<Boolean> daysBooked;
 
-    public Room(int roomNum){
-        int i;
-
+    // Constructor
+    public Room(String name) {
+        this.name = name;
         this.basePrice = 1299.0;
-        this.availability = true;
-        this.num = roomNum;
-        
-        //adds 31 items to the day arraylist. 0 = available, 1 = booked
-        for (i = 0; i < 31; i++){
-            day.add(0);
+        this.daysBooked = new ArrayList<>(31); // Initialize with 31 days
+
+        // Initialize all days as not booked (false)
+        for (int i = 0; i < 31; i++) {
+            daysBooked.add(false);
         }
     }
 
-    public void setBasePrice(double price){
-        this.basePrice = price;
-    }
-    
-    public boolean isAvailable(int Date){
-        if (day.get(Date-1) == 0){
-            return true;
-        }
-        else{
-            return false;
+    // Setters
+    public void setBasePrice(double price) {
+        if (price >= 100.0) {
+            this.basePrice = price;
+        } else {
+            System.out.println("Invalid value. New price must be greater than or equal to 100.0");
         }
     }
 
-    public double getBasePrice(){
+    public void setDaysBooked(boolean status, int startingDay, int lastDay) {
+        // Ensure startingDay and lastDay are within valid range
+        if (startingDay < 1) {
+            startingDay = 1;
+        }
+        if (lastDay > 31) {
+            lastDay = 31;
+        }
+
+        // Book/unbook days from startingDay to lastDay
+        for (int i = startingDay - 1; i < lastDay; i++) {
+            daysBooked.set(i, status);
+        }
+    }
+
+    // Getters
+    public double getBasePrice() {
         return basePrice;
     }
 
-    public int getName(){
-        return num;
+    public String getName() {
+        return name;
     }
 
-    public void getAvailability(){
-        int i;
+    public ArrayList<Boolean> getDaysBooked() {
+        return daysBooked;
+    }
 
-        for (i = 0; i < 31; i++){
-            System.out.print("Day " + i+1 + ": ");
-
-            if (isAvailable(i) == true){
-                System.out.println("Vacant");
+    public int getTotalAvailable() {
+        int total = 0;
+        for (boolean booked : daysBooked) {
+            if (!booked) {
+                total++;
             }
+        }
+        return total;
+    }
 
-            else{
-                System.out.println("Booked");
+    public int getTotalBooked() {
+        int total = 0;
+        for (boolean booked : daysBooked) {
+            if (booked) {
+                total++;
+            }
+        }
+        return total;
+    }
+
+    public boolean checkAvailability(int checkIn, int checkOut) {
+        // Adjust checkIn and checkOut to zero-based index
+        checkIn--;
+        checkOut--;
+
+        if (checkIn < 0 || checkIn >= 30 || checkOut <= 0 || checkOut >= 31 || checkOut < checkIn) {
+            return false;
+        }
+
+        // Check special condition for checkIn
+        if (daysBooked.get(checkIn) && (checkIn + 1 <= checkOut) && !daysBooked.get(checkIn + 1)) {
+            checkIn++;
+        }
+
+        // Check if any day in the range [checkIn, checkOut] is booked
+        for (int i = checkIn; i <= checkOut; i++) {
+            if (daysBooked.get(i)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public void displayBooked(String input) {
+        for (int i = 0; i < 31; i++) {
+            if (input.equalsIgnoreCase("YES")) {
+                if (daysBooked.get(i)) {
+                    System.out.printf("  Day %2d: \u001b[31;1mBooked\u001b[0m%n", i + 1);
+                } else {
+                    System.out.printf("  Day %2d: \u001b[32;1mAVAILABLE\u001b[0m%n", i + 1);
+                }
+                System.out.println();
+            } else {
+                if (daysBooked.get(i)) {
+                    System.out.printf("  Day %2d: \u001b[32;1mAVAILABLE\u001b[0m%n", i + 1);
+                }
             }
         }
     }
-    
 }
