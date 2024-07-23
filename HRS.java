@@ -48,6 +48,10 @@ public class HRS {
         int option;
         boolean avail;
         boolean roomBooked;
+        String discountCode;
+        int discountApplied = -1;
+        boolean loop;
+
 
         if (hotelList.isEmpty()) {
             System.out.println("No hotels available to book.");
@@ -68,16 +72,85 @@ public class HRS {
 
         System.out.print("\nEnter Check-In Date (1-30): ");
         checkIn = scanner.nextInt();
+        scanner.nextLine(); // leftover newline
         while (checkIn < 1 || checkIn > 30) {
             System.out.print("\nInvalid input. Please enter a valid Check-In Date (1-30): ");
             checkIn = scanner.nextInt();
+            scanner.nextLine(); // leftover newline
         }
 
         System.out.print("Enter Check-Out Date (2-31): ");
         checkOut = scanner.nextInt();
+        scanner.nextLine(); // leftover newline
         while (checkOut < 2 || checkOut > 31 || checkOut <= checkIn) {
             System.out.print("\nInvalid input. Please enter a valid Check-Out Date (2-31, after Check-In): ");
             checkOut = scanner.nextInt();
+            scanner.nextLine(); // leftover newline
+        }
+        
+        loop = true;
+
+        while (loop){
+            System.out.println("\nEnter a Discount Code Below! (Type \"NONE\" if not applicable)");
+            discountCode = scanner.nextLine();
+
+            switch (discountCode){
+
+                case "I_WORK_HERE":
+
+                    discountApplied = 1;
+                    System.out.println("Code Valid!");
+                    loop = false;
+
+                break;
+
+
+                case "STAY4_GET1":
+
+                    if (checkOut - checkIn >= 4){
+                        discountApplied = 2;
+                        System.out.println("Code Valid!");
+                        loop = false;
+                    }
+
+                    else{
+                        System.out.println("Invalid Discount Code!");
+                    }
+                    
+
+                break;
+
+
+                case "PAYDAY":
+
+                    if (checkIn <= 15 && checkOut > 15 || checkIn <= 30 && checkOut > 30){
+                        discountApplied = 3;
+                        System.out.println("Code Valid!");
+                        loop = false;
+                    }
+
+                    else{
+                        System.out.println("Invalid Discount Code!");
+                    }
+                        
+
+                break;
+
+
+                case "NONE":
+
+                    discountApplied = 0;
+                    loop = false;
+
+                break;
+
+
+                default:
+
+                    System.out.println("Invalid Discount Code!");
+                
+                break;
+            }
         }
 
         System.out.println("\nChoose an option:");
@@ -119,7 +192,7 @@ public class HRS {
 
                     if (option == 1) {
                         if (room.checkAvailability(checkIn, checkOut)) {
-                            chosenHotel.addReservation(guestName, checkIn, checkOut, room);
+                            chosenHotel.addReservation(guestName, checkIn, checkOut, room, discountApplied);
                             System.out.println("\nReservation confirmed! Room \u001b[36;1m" + room.getName() + "\u001b[0m booked.");
                             roomBooked = true;
                         } else {
@@ -191,7 +264,7 @@ public class HRS {
                     }
 
                     if (option == 1) {
-                        chosenHotel.addReservation(guestName, checkIn, checkOut, selectedRoom);
+                        chosenHotel.addReservation(guestName, checkIn, checkOut, selectedRoom, discountApplied);
                         System.out.println("\nReservation confirmed! Room \u001b[36;1m" + selectedRoom.getName() + "\u001b[0m booked.");
                         roomBooked = true;
                     } else {
@@ -255,7 +328,7 @@ public class HRS {
                     }
 
                     if (option == 1) {
-                        chosenHotel.addReservation(guestName, checkIn, checkOut, roomSelected);
+                        chosenHotel.addReservation(guestName, checkIn, checkOut, roomSelected, discountApplied);
                         System.out.println("\nReservation confirmed! Room \u001b[36;1m" + roomSelected.getName() + "\u001b[0m booked.");
                         roomBooked = true;
                     } else {
@@ -265,6 +338,7 @@ public class HRS {
                 }
                 break;
         }
+
     }
 
     /**

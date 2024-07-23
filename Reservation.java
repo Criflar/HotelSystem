@@ -9,6 +9,7 @@ public class Reservation {
     private int checkOut;
     private Room roomInfo;
     private double totalPrice;
+    private int discount = 0;
 
     /**
      * Constructor to create a new Reservation with the given details.
@@ -76,6 +77,18 @@ public class Reservation {
         return totalPrice;
     }
 
+    public void setTotalPrice(double newPrice){
+        this.totalPrice = newPrice;
+    }
+
+    public int getDiscount(){
+        return discount;
+    }
+
+    public void setDiscount(int n){
+        this.discount = n;
+    }
+
     /**
      * Displays a detailed breakdown of the price for the reservation.
      */
@@ -91,7 +104,33 @@ public class Reservation {
         // Display the number of nights
         System.out.printf("  Number of Nights:     \u001b[36;1m%d%n\u001b[0m", nights);
         System.out.println("  -----------------------------");
+        discountScenario();
+        System.out.println("  -----------------------------");
         // Display the total cost
         System.out.printf("  Total Cost:           \u001b[36;1m$%.1f%n\u001b[0m\n", totalPrice);
+    }
+
+    public void discountScenario(){
+
+        switch (discount){
+
+            case 1: 
+                System.out.println("        \u001b[36;1m 10% Off Total \u001b[0m");
+            break;
+
+            case 2:
+                System.out.println("        \u001b[36;1m Day 1 Free \u001b[0m");
+            break;
+
+            case 3:
+                System.out.println("        \u001b[36;1m 7% Off Total \u001b[0m");
+            break;
+
+            case 0:
+                System.out.println("    \u001b[36;1m No Discount Code Used. \u001b[0m");
+            break;
+
+        }
+            
     }
 }

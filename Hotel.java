@@ -187,10 +187,36 @@ public class Hotel {
             System.out.println("  Room BasePrice: \u001b[36;1m" + selectedReservation.getRoomInfo().getBasePrice() + "\u001b[0m");
             System.out.println("  Check-in Date: Day \u001b[36;1m" + selectedReservation.getCheckIn() + "\u001b[0m");
             System.out.println("  Check-out Date: Day \u001b[36;1m" + selectedReservation.getCheckOut() + "\u001b[0m");
-            System.out.println("  Total Price for Stay: $\u001b[36;1m" + String.format("%.2f", selectedReservation.getTotalPrice()) + "\u001b[0m");
+            System.out.print("  Active Discount:");
+            discountDisplay(selectedReservation);
+            System.out.println("  Total Price for Stay: \u001b[36;1m$" + String.format("%.2f", selectedReservation.getTotalPrice()) + "\u001b[0m");
             selectedReservation.displayPriceBreakdown();
             System.out.println();
         }
+    }
+
+    public void discountDisplay(Reservation r){
+
+        switch (r.getDiscount()){
+
+            case 1: 
+                System.out.println("\u001b[36;1m \"I_WORK_HERE\" \u001b[0m");
+            break;
+
+            case 2:
+                System.out.println("\u001b[36;1m \"STAY4_GET1\" \u001b[0m");
+            break;
+
+            case 3:
+                System.out.println("\u001b[36;1m \"PAYDAY\" \u001b[0m");
+            break;
+
+            case 0:
+                System.out.println("\u001b[36;1m N/A \u001b[0m");
+            break;
+
+        }
+            
     }
 
     /**
@@ -349,14 +375,65 @@ public class Hotel {
      * @param checkOut  the check-out date
      * @param room      the room to reserve
      */
-    public void addReservation(String guestName, int checkIn, int checkOut, Room room) {
+    public void addReservation(String guestName, int checkIn, int checkOut, Room room, int discountApplied) {  
         if (room.checkAvailability(checkIn, checkOut)) {
-            reservations.add(new Reservation(guestName, checkIn, checkOut, room));
+            Reservation r = new Reservation(guestName, checkIn, checkOut, room);
+            reservations.add(r);
             updateRoomAvailability(room, checkIn, checkOut, true);
+
+            applyDiscount(discountApplied, r);
+
             updateEarnings();
+
         } else {
             System.out.println("Room " + room.getName() + " is not available for the selected dates.");
         }
+    }
+
+    public void applyDiscount(int discountApplied, Reservation r){
+        double newPrice;
+        double basePrice;
+        int noOfDays;
+
+        r.setDiscount(discountApplied);
+        
+        basePrice = r.getRoomInfo().getBasePrice();
+        noOfDays = r.getCheckOut() - r.getCheckIn();
+
+        switch (discountApplied){
+
+            case 1:
+
+                discount1 dc1 = new discount1();
+
+                newPrice = dc1.calculateDiscount(basePrice, noOfDays);
+
+                r.setTotalPrice(newPrice);
+                
+
+            break;
+
+            case 2:
+
+                discount2 dc2 = new discount2();
+
+                newPrice = dc2.calculateDiscount(basePrice, noOfDays);
+
+                r.setTotalPrice(newPrice);
+
+            break;
+
+            case 3:
+
+                discount3 dc3 = new discount3();
+
+                newPrice = dc3.calculateDiscount(basePrice, noOfDays);
+
+                r.setTotalPrice(newPrice);
+
+            break;
+        }
+
     }
 
     /**
