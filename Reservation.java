@@ -22,14 +22,16 @@ public class Reservation {
      */
     public Reservation(String guestName, int checkIn, int checkOut, Room roomInfo) {
         this.guestName = guestName;
-        this.checkIn = checkIn;
-        this.checkOut = checkOut;
+        this.checkIn = checkIn - 1;
+        this.checkOut = checkOut - 1;
         this.roomInfo = roomInfo;
 
         // Calculate the number of nights the guest will stay
-        int nights = checkOut - checkIn;
+        //int nights = checkOut - checkIn;
         // Calculate the total price for the stay
-        this.totalPrice = nights * roomInfo.getBasePrice();
+        //this.totalPrice = nights * roomInfo.getBasePrice();
+
+        this.totalPrice = initTotalPrice(0);
     }
 
     /**
@@ -56,7 +58,7 @@ public class Reservation {
      * @return the check-in date
      */
     public int getCheckIn() {
-        return checkIn;
+        return checkIn + 1;
     }
 
     /**
@@ -65,7 +67,7 @@ public class Reservation {
      * @return the check-out date
      */
     public int getCheckOut() {
-        return checkOut;
+        return checkOut + 1;
     }
 
     /**
@@ -87,6 +89,17 @@ public class Reservation {
 
     public void setDiscount(int n){
         this.discount = n;
+    }
+
+    public double initTotalPrice(int n){
+        int i;
+        double sum = 0;
+
+        for (i = checkIn + n; i < checkOut; i++){
+            sum = sum + roomInfo.getDPMList().get(i).getNewPrice();
+        }
+
+        return sum;
     }
 
     /**

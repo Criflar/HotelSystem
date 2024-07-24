@@ -1,5 +1,5 @@
 abstract class discount {
     
-    abstract double calculateDiscount(double basePrice, int noOfDays);
+    abstract double calculateDiscount(Reservation r);
 
 }

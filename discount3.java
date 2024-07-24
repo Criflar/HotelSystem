@@ -1,8 +1,8 @@
 public class discount3 extends discount{
     
-    double calculateDiscount(double basePrice, int noOfDays){
+    double calculateDiscount(Reservation r){
 
-        return (basePrice * noOfDays) * 0.93;
+        return r.getTotalPrice() * 0.93;
 
     }
 

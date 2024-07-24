@@ -392,13 +392,8 @@ public class Hotel {
 
     public void applyDiscount(int discountApplied, Reservation r){
         double newPrice;
-        double basePrice;
-        int noOfDays;
 
         r.setDiscount(discountApplied);
-        
-        basePrice = r.getRoomInfo().getBasePrice();
-        noOfDays = r.getCheckOut() - r.getCheckIn();
 
         switch (discountApplied){
 
@@ -406,7 +401,7 @@ public class Hotel {
 
                 discount1 dc1 = new discount1();
 
-                newPrice = dc1.calculateDiscount(basePrice, noOfDays);
+                newPrice = dc1.calculateDiscount(r);
 
                 r.setTotalPrice(newPrice);
                 
@@ -417,7 +412,7 @@ public class Hotel {
 
                 discount2 dc2 = new discount2();
 
-                newPrice = dc2.calculateDiscount(basePrice, noOfDays);
+                newPrice = dc2.calculateDiscount(r);
 
                 r.setTotalPrice(newPrice);
 
@@ -427,7 +422,7 @@ public class Hotel {
 
                 discount3 dc3 = new discount3();
 
-                newPrice = dc3.calculateDiscount(basePrice, noOfDays);
+                newPrice = dc3.calculateDiscount(r);
 
                 r.setTotalPrice(newPrice);
 
@@ -503,6 +498,13 @@ public class Hotel {
                 ExecutiveRoom a = (ExecutiveRoom) rooms.get(i);
                 a.updatePrice();
             }
+
+            for (int j = 0; j < 31; j++){
+
+                rooms.get(i).getDPMList().get(j).setBasePrice(price);
+
+            }
+
         }
 
         System.out.println("Base price updated successfully.\n");
@@ -520,6 +522,16 @@ public class Hotel {
         for (int i = checkIn - 1; i < checkOut; i++) {
             room.getDaysBooked().set(i, booked);
         }
+    }
+
+    public void updateDPM(int dateModified, int modifierValue){
+
+        int i;
+
+        for (i = 0; i < rooms.size(); i++){
+            rooms.get(i).getDPMList().get(dateModified).setModifier(modifierValue);
+        }
+
     }
 
     /**

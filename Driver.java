@@ -34,6 +34,8 @@ public class Driver {
         double newBasePrice;
         int invalidPrice;
         int removeHotel;
+        int dateModified;
+        int modifierValue;
         HRS HRS = new HRS(); // Instantiate the Hotel Reservation System
 
         Scanner input = new Scanner(System.in); // Scanner object for user input
@@ -243,13 +245,14 @@ public class Driver {
                         System.out.println("| [4] Update Base Price");
                         System.out.println("| [5] Remove Reservation");
                         System.out.println("| [6] Remove Hotel");
+                        System.out.println("| [7] Date Price Modifier");
                         System.out.println("===============================================");
                         System.out.print("INPUT: ");
                         manageChoice2 = input.nextInt();
                         input.nextLine(); // leftover newline
 
                         // Validate user input for manage options
-                        while (manageChoice2 < 0 || manageChoice2 > 6) {
+                        while (manageChoice2 < 0 || manageChoice2 > 7) {
                             System.out.print("Invalid input. Please enter a valid choice: ");
                             manageChoice2 = input.nextInt();
                             input.nextLine(); // leftover newline
@@ -459,6 +462,19 @@ public class Driver {
                                 if (removeHotel == 1) {
                                     HRS.removeHotel(manageChoice);
                                 }
+
+                                break;
+
+                            case 7:
+                                System.out.println("Input a date:");
+                                dateModified = input.nextInt();
+                                input.nextLine(); // leftover newline
+
+                                System.out.println("In percentages, how would you like to modify the price? (50%, 150%, etc.)");
+                                modifierValue = input.nextInt();
+                                input.nextLine(); // leftover newline
+
+                                HRS.getHotelList().get(manageChoice).updateDPM(dateModified - 1, modifierValue);
 
                                 break;
 

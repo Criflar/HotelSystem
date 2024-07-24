@@ -7,6 +7,7 @@ public class Room {
     protected String name;
     protected double basePrice;
     protected ArrayList<Boolean> daysBooked;
+    protected ArrayList<DPM> DPMList;
 
     /**
      * Constructor to initialize a Room with a name and default base price.
@@ -18,10 +19,12 @@ public class Room {
         this.name = name;
         this.basePrice = 1299.0;
         this.daysBooked = new ArrayList<>(31); // Initialize with 31 days
+        this.DPMList = new ArrayList<>(31); // Initialize with 31 days
 
-        // Initialize all days as not booked (false)
+        
         for (int i = 0; i < 31; i++) {
-            daysBooked.add(false);
+            daysBooked.add(false); // Initialize all days as not booked (false)
+            DPMList.add(new DPM(basePrice)); // Initialize all days' base prices.
         }
     }
 
@@ -33,6 +36,7 @@ public class Room {
     public void setBasePrice(double price) {
         if (price >= 100.0) { // Ensure the new price is valid
             this.basePrice = price;
+
         } else {
             System.out.println("Invalid value. New price must be greater than or equal to 100.0");
         }
@@ -63,6 +67,10 @@ public class Room {
      */
     public ArrayList<Boolean> getDaysBooked() {
         return daysBooked;
+    }
+
+    public ArrayList<DPM> getDPMList(){
+        return DPMList;
     }
 
     /**
