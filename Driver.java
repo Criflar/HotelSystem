@@ -36,6 +36,7 @@ public class Driver {
         int removeHotel;
         int dateModified;
         int modifierValue;
+        boolean invalidPercent;
         HRS HRS = new HRS(); // Instantiate the Hotel Reservation System
 
         Scanner input = new Scanner(System.in); // Scanner object for user input
@@ -469,12 +470,23 @@ public class Driver {
                                 System.out.println("Input a date:");
                                 dateModified = input.nextInt();
                                 input.nextLine(); // leftover newline
+                                
+                                invalidPercent = true;
+                                while (invalidPercent){
+                                    System.out.println("In percentages, how would you like to modify the price? (50% - 150%)");
+                                    modifierValue = input.nextInt();
+                                    input.nextLine(); // leftover newline
 
-                                System.out.println("In percentages, how would you like to modify the price? (50%, 150%, etc.)");
-                                modifierValue = input.nextInt();
-                                input.nextLine(); // leftover newline
+                                    if (modifierValue < 50 || modifierValue > 150){
+                                        System.out.println("Please input a valid value!");
+                                    }
 
-                                HRS.getHotelList().get(manageChoice).updateDPM(dateModified - 1, modifierValue);
+                                    else{
+                                        invalidPercent = false;
+                                        HRS.getHotelList().get(manageChoice).updateDPM(dateModified - 1, modifierValue);
+                                        System.out.println("Date Price Modifier Successfully Set!\n");
+                                    }
+                                }  
 
                                 break;
 
