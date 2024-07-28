@@ -31,7 +31,7 @@ public class Reservation {
         // Calculate the total price for the stay
         //this.totalPrice = nights * roomInfo.getBasePrice();
 
-        this.totalPrice = initTotalPrice(0);
+        this.totalPrice = calcTotalPrice(0);
     }
 
     /**
@@ -91,7 +91,7 @@ public class Reservation {
         this.discount = n;
     }
 
-    public double initTotalPrice(int n){
+    public double calcTotalPrice(int n){
         int i;
         double sum = 0;
 

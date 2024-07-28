@@ -15,9 +15,9 @@ public class Room {
      *
      * @param name the name of the room
      */
-    public Room(String name) {
+    public Room(String name, double roomPrice) {
         this.name = name;
-        this.basePrice = 1299.0;
+        this.basePrice = roomPrice;
         this.daysBooked = new ArrayList<>(31); // Initialize with 31 days
         this.DPMList = new ArrayList<>(31); // Initialize with 31 days
 
@@ -34,11 +34,12 @@ public class Room {
      * @param price the new base price of the room
      */
     public void setBasePrice(double price) {
-        if (price >= 100.0) { // Ensure the new price is valid
-            this.basePrice = price;
+        this.basePrice = price;
 
-        } else {
-            System.out.println("Invalid value. New price must be greater than or equal to 100.0");
+        for (int i = 0; i < DPMList.size(); i++){
+
+            DPMList.get(i).setBasePrice(price);
+
         }
     }
 

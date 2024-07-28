@@ -1,12 +1,18 @@
 public class DeluxeRoom extends Room{
     
-    public DeluxeRoom (String name){
-        super(name);
-        updatePrice();
+    public DeluxeRoom (String name, double roomPrice){
+        super(name, roomPrice);
+        setBasePrice(roomPrice);
     }
 
-    public void updatePrice(){
-        this.basePrice = basePrice * 1.20;
+    public void setBasePrice(double price) {
+        this.basePrice = price * 1.2;
+
+        for (int i = 0; i < DPMList.size(); i++){
+
+            DPMList.get(i).setBasePrice(this.basePrice);
+
+        }
     }
 
 }

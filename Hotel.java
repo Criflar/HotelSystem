@@ -13,6 +13,7 @@ public class Hotel {
     private int totalAvailable;
     private int totalBooked;
     private Scanner input = new Scanner(System.in);
+    private double roomPrice = 1299.00;
 
     /**
      * Constructor to create a Hotel with a specified name.
@@ -22,7 +23,7 @@ public class Hotel {
      */
     public Hotel(String name) {
         this.name = name;
-        rooms.add(new Room("A0")); // Initial room setup
+        rooms.add(new Room("A0", roomPrice)); // Initial room setup
         updateEarnings();
     }
 
@@ -321,15 +322,15 @@ public class Hotel {
 
             switch (type){
                 case 1: 
-                    rooms.add(new Room(newRoomName));
+                    rooms.add(new Room(newRoomName, roomPrice));
                 break;
 
                 case 2:
-                    rooms.add(new DeluxeRoom(newRoomName + " (Deluxe)"));
+                    rooms.add(new DeluxeRoom(newRoomName + " (Deluxe)", roomPrice));
                 break;
 
                 case 3:
-                    rooms.add(new ExecutiveRoom(newRoomName + " (Executive)"));
+                    rooms.add(new ExecutiveRoom(newRoomName + " (Executive)", roomPrice));
                 break;
             }
             
@@ -395,38 +396,41 @@ public class Hotel {
 
         r.setDiscount(discountApplied);
 
-        switch (discountApplied){
+        if (discountApplied != 0){
+            switch (discountApplied){
 
-            case 1:
+                case 1:
 
-                discount1 dc1 = new discount1();
+                    discount1 dc1 = new discount1();
 
-                newPrice = dc1.calculateDiscount(r);
+                    newPrice = dc1.calculateDiscount(r);
 
-                r.setTotalPrice(newPrice);
-                
+                    r.setTotalPrice(newPrice);
+                    
 
-            break;
+                break;
 
-            case 2:
+                case 2:
 
-                discount2 dc2 = new discount2();
+                    discount2 dc2 = new discount2();
 
-                newPrice = dc2.calculateDiscount(r);
+                    newPrice = dc2.calculateDiscount(r);
 
-                r.setTotalPrice(newPrice);
+                    r.setTotalPrice(newPrice);
 
-            break;
+                break;
 
-            case 3:
+                case 3:
 
-                discount3 dc3 = new discount3();
+                    discount3 dc3 = new discount3();
 
-                newPrice = dc3.calculateDiscount(r);
+                    newPrice = dc3.calculateDiscount(r);
 
-                r.setTotalPrice(newPrice);
+                    r.setTotalPrice(newPrice);
 
-            break;
+                break;
+            }
+
         }
 
     }
@@ -485,29 +489,23 @@ public class Hotel {
         }
         */
 
-        for (int i = 0; i < rooms.size(); i++){
+        if (price >= 100.0) { // Ensure the new price is valid
+            for (int i = 0; i < rooms.size(); i++){
 
-            rooms.get(i).setBasePrice(price);
-            
-            if (rooms.get(i) instanceof DeluxeRoom){
-                DeluxeRoom a = (DeluxeRoom) rooms.get(i);
-                a.updatePrice();
-            }
+            roomPrice = price;
 
-            if (rooms.get(i) instanceof ExecutiveRoom){
-                ExecutiveRoom a = (ExecutiveRoom) rooms.get(i);
-                a.updatePrice();
-            }
-
-            for (int j = 0; j < 31; j++){
-
-                rooms.get(i).getDPMList().get(j).setBasePrice(price);
+            rooms.get(i).setBasePrice(roomPrice);
 
             }
 
+            System.out.println("Base price updated successfully.\n");
+
+        } 
+        
+        else {
+            System.out.println("Invalid value. New price must be greater than or equal to 100.0");
         }
-
-        System.out.println("Base price updated successfully.\n");
+        
     }
 
     /**

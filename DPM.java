@@ -1,4 +1,4 @@
-public class DPM {
+public class DPM implements DPMInterface{
     
     private double modifier;
     private double basePrice;
@@ -13,15 +13,11 @@ public class DPM {
         this.modifier = n;
     }
 
-    public double getModifier(){
-        return modifier;
-    }
-
     public double getNewPrice(){
         return basePrice * modifier;
     }
 
-    public void setBasePrice(double basePrice){
-        this.basePrice = basePrice;
+    public void setBasePrice(double newPrice){
+        this.basePrice = newPrice;
     }
 }
